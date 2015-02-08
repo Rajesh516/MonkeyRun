@@ -56,7 +56,8 @@ public class PlayerManager : MonoBehaviour
 	bool shopReviveUsed						= false;					//The shop revive is used/unused
 	bool canJump;
 	bool powerUpUsed						= false;					//A power up is used/unused
-	
+	bool sinked								= false;
+
 	Transform thisTransform;											//The transform of this object stored
 	public GameObject monkeyAnimationObject;
     //Retursn the instance
@@ -74,7 +75,7 @@ public class PlayerManager : MonoBehaviour
 	//Called at the beginning the game
 	void Start()
 	{
-		canJump = true;
+		CanJumpSetter (true);
         //Calibrates the myInstance static variable
         instances++;
 		monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (0);
@@ -93,6 +94,7 @@ public class PlayerManager : MonoBehaviour
 		if (rigidbody.velocity.y < 0)
 		{
 			rigidbody.velocity -= new Vector3 (0, 2, 0);
+			//print ("Velocity+++++++    " + rigidbody.velocity.y);
 		}
 		//If the control are enabled
 		if (subEnabled)
@@ -120,8 +122,9 @@ public class PlayerManager : MonoBehaviour
 		//Notify the mission manager
 		UpdateMission(other.transform.name);
 		//If the sub is not sinking, and doesn't have a protection
-		if (!sinking && canSink && !shieldActive)
+		if (!sinking && canSink && !shieldActive && !sinked)
 		{
+
 			//Sink it, disable controls, and wreck it
 			sinking = true;
 			DisableControls();
@@ -266,7 +269,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		if (colli.gameObject.tag.Equals ("Platform") && subEnabled) 
 		{
-			canJump = true;
+			CanJumpSetter(true);
 			monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (0);
 		}
 						
@@ -445,6 +448,7 @@ public class PlayerManager : MonoBehaviour
 			//Apply the above to the submarine
 			MoveAndRotate();
 			sinking = false;
+			sinked = true;
 			StartCoroutine ("SinkEffects");
 			//If distance to sand smaller than 2.5
 			//if (distance < 2.5f)
@@ -456,6 +460,7 @@ public class PlayerManager : MonoBehaviour
 		{
 			//Disable this function from calling
 			sinking = false;
+			sinked = true;
 			//Show sink effects
 			StartCoroutine ("SinkEffects");
 		}
@@ -664,12 +669,13 @@ public class PlayerManager : MonoBehaviour
 	//Called from the Input manager
 	public void MoveUp()
 	{
+//		print ("------CanJump----" + canJump);
 		//ShootWeapon ();
 		if (canJump && subEnabled) 
 		{
 			monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (1);
 			rigidbody.velocity = new Vector3 (0, 35, 0);
-			canJump = false;		
+			CanJumpSetter(false);
 		}
 		//If the player is not at the min depth, and the controls are enabled, move up
 		//if (distanceToMin > 0 && subEnabled)	
@@ -680,7 +686,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		if (LevelManager.Instance.Coins () > 0 && subEnabled) 
 		{
-			monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (3);
+			//monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (3);
 			Instantiate(weaponPrefab,weaponInstantiateLocation.transform.position,weaponInstantiateLocation.transform.rotation);	
 			LevelManager.Instance.CoinUsed(1);
 		}
@@ -713,7 +719,7 @@ public class PlayerManager : MonoBehaviour
 		paused = false;
 		movingUpward = false;
 		canSink = true;
-		
+		sinked = false;
 		inRevive = false;
 		hasRevive = false;
 		shopReviveUsed = false;
@@ -739,7 +745,7 @@ public class PlayerManager : MonoBehaviour
 		//If moveToStart, move the submarine from the resting position to the starting position
 		if (moveToStart)
 		{
-			StartCoroutine(MoveToPosition(this.transform, new Vector3(xPos, -23, thisTransform.position.z), 1.0f, true));
+			StartCoroutine(MoveToPosition(this.transform, new Vector3(xPos, -26.55f, thisTransform.position.z), 1.0f, true));
 		}
 	}
 	//Disable submarine controls
@@ -833,7 +839,8 @@ public class PlayerManager : MonoBehaviour
 			canSink = true;
 			subEnabled = true;
 			movingUpward = false;
-			inRevive = false;	
+			inRevive = false;
+			sinked = false;
 		}
 		
 		//If the player is already in revive, wait for the end of frame, and return to caller
@@ -848,5 +855,10 @@ public class PlayerManager : MonoBehaviour
 	public Vector3 MyTransform()
 	{
 		return transform.position;
+	}
+
+	public void CanJumpSetter(bool temp)
+	{
+		canJump = temp;
 	}
 }

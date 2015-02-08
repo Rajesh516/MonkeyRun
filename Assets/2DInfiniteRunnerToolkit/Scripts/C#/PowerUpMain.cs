@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class PowerUpMain : MonoBehaviour 
 {
-	public float verticalSpeed = 5.0f;							//The vertical speed of the generated power ups
-	public float verticalDistance = 1.0f;						//The vertical movement distance of the generated power ups
+	public float verticalSpeed = 0f;							//The vertical speed of the generated power ups
+	public float verticalDistance = 0f;						//The vertical movement distance of the generated power ups
 	
-	public float horizontalSpeed  = 0;							//The horizontal speed of the generated power up
+	public float horizontalSpeed  = 1;							//The horizontal speed of the generated power up
 	
 	List<PowerUp> inactive 	 	= new List<PowerUp>();			//A list of the active power ups
 	List<PowerUp> activated	 	= new List<PowerUp>();			//A list of the deactivated power ups

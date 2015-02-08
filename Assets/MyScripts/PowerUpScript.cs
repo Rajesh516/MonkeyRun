@@ -18,7 +18,9 @@ public class PowerUpScript : MonoBehaviour
 
 	void OnTriggerEnter(Collider colli)
 	{
-		PlayerManager.Instance.PowerUpsCollected(gameObject.collider);
+		if (colli.tag.Equals ("Player")) {
+			PlayerManager.Instance.PowerUpsCollected (gameObject.collider);
+				}
 		/*if (isMagnet)
 						;
 		if (isFastLegs)

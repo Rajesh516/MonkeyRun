@@ -26,4 +26,14 @@ public class BrokenPlatformScript : MonoBehaviour {
 						boxCollider.isTrigger = false;
 		}
 	}
+
+	void OnCollisionExit(Collision colli)
+	{
+		//print ("---" + colli.gameObject.name);
+		if (colli.gameObject.tag.Equals ("Player")) 
+		{
+			;//PlayerManager.Instance.CanJumpSetter(false);
+		}
+	}
+
 }

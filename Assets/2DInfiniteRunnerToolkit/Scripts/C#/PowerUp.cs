@@ -52,14 +52,15 @@ public class PowerUp : MonoBehaviour
         #if UNITY_3_5
             what.SetActiveRecursively(state);
         #else
-            what.SetActive(state);
+			if(what != null)
+            	what.SetActive(state);
         #endif
     }
 	//Called when the power up manager activates this power up
 	public void Setup(float vSpeed, float vDist, float hSpeed)
 	{
 		//Set speed related variables
-		this.verticalSpeed = vSpeed;
+		this.verticalSpeed = 0;
 		this.verticalDistance = vDist;
 		this.horizontalSpeed = hSpeed;
 		

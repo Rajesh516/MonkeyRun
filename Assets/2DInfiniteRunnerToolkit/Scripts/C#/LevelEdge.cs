@@ -50,7 +50,6 @@ public class LevelEdge : MonoBehaviour
 				}
 		//If a torpedo is collided with this
 		else if (other.name == "Torpedo") {
-			print ("Torpedo-------");
 						//Reset the torpedo
 						other.transform.parent.gameObject.GetComponent<Torpedo> ().ResetThis ();
 				} else if (other.gameObject.name.Equals ("ObstacleGenTriggerer")) {

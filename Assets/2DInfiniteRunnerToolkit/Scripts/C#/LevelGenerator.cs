@@ -75,10 +75,10 @@ public class LevelGenerator : MonoBehaviour
 		//Sets the starting values
 		defaultScroll = scrollSpeed;
 		
-		scrollBackg = scrollSpeed * 12.5f;
-		scrollMiddle = scrollBackg * 3;
-		scrollForg = scrollBackg * 8;
-		
+		//scrollBackg = scrollSpeed * 12.5f;
+		//scrollMiddle = scrollBackg * 3;
+		//scrollForg = scrollBackg * 4;
+		ScrollingSpeed ();
 		//Generate a seconds and third layer in the middle
 		GenerateSecondLayer(1);
 		GenerateThirdLayer(1);
@@ -120,10 +120,10 @@ public class LevelGenerator : MonoBehaviour
 			scrollSpeed = defaultScroll + (((maxScrollSpeedDist - (maxScrollSpeedDist - distance)) / maxScrollSpeedDist) * (maxScrollSpeed - defaultScroll));
 		
 		//Calculate the other scrolling speeds
-		scrollBackg = scrollSpeed * 12.5f;
-		scrollMiddle = scrollBackg * 3;
-		scrollForg = scrollBackg * 8;
-		
+		//scrollBackg = scrollSpeed * 12.5f;
+		//scrollMiddle = scrollBackg * 3;
+		//scrollForg = scrollBackg * 4;
+		ScrollingSpeed ();
 		//Scroll the elements in the list activeElements, with a speed maching their layer
 		for (int i = 0; i < activeElements.Count; i++)
 		{
@@ -252,7 +252,7 @@ public class LevelGenerator : MonoBehaviour
 			yield return 0;
 		}
 		//Generate a power up
-		powerUpMain.GeneratePowerUp(scrollSpeed/defaultScroll);
+		powerUpMain.GeneratePowerUp(scrollForg);
 		//Set power up generation switch to true
 		canGeneratePowerUp = true;
 	}
@@ -605,5 +605,12 @@ public class LevelGenerator : MonoBehaviour
 		
 		//Generate a fourth layer element
 
+	}
+
+	void ScrollingSpeed()
+	{
+		scrollBackg = scrollSpeed * 12.5f;
+		scrollMiddle = scrollBackg * 2;
+		scrollForg = scrollBackg * 5f;
 	}
 }

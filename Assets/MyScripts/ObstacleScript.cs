@@ -3,25 +3,41 @@ using System.Collections;
 
 public class ObstacleScript : MonoBehaviour {
 	Rigidbody rigidBodyObstacle;
+	BoxCollider boxCollider;
+	public bool flyingObstacle;
+	public Vector3 initialPos;
+	void OnEnable(){
+		if (flyingObstacle) {
+			transform.localPosition = initialPos;		
+		}
+	}
 	// Use this for initialization
 	void Start () {
-		GetComponent<BoxCollider> ().isTrigger = true;
+		boxCollider = GetComponent<BoxCollider> ();
+		boxCollider.size = new Vector3 (0.75f, 0.7f, 22.8f);
+		boxCollider.isTrigger = true;
 		rigidBodyObstacle = gameObject.GetComponent<Rigidbody> ();
 		if(rigidBodyObstacle == null)
 			rigidBodyObstacle = gameObject.AddComponent<Rigidbody> ();
-		rigidBodyObstacle.isKinematic = true;
-		rigidBodyObstacle.useGravity = false;
+		if (flyingObstacle == false) {
+			rigidBodyObstacle.isKinematic = true;	
+			rigidBodyObstacle.useGravity = false;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (flyingObstacle) {
+			transform.localPosition  += new Vector3(Time.deltaTime,0,0); 
+		}
 	
 	}
 
 	void OnTriggerEnter(Collider colli)
 	{
 		if (colli.gameObject.tag.Equals ("Player")) {
-			;//PlayerManager.Instance.ObstacleCollided(gameObject.collider);	
+			if(!IsTesting.instance.isTesting)
+				PlayerManager.Instance.ObstacleCollided(gameObject.collider);	
 		}
 		if (colli.gameObject.tag.Equals ("Weapon")) {
 			Transform expParent = transform;
