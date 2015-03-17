@@ -2,9 +2,10 @@
 using System.Collections;
 
 public class WeaponScript : MonoBehaviour {
-
+	int count = 0;
 	// Use this for initialization
 	void Start () {
+		count = 0;
 	
 	}
 	
@@ -12,6 +13,8 @@ public class WeaponScript : MonoBehaviour {
 	void Update () {
 		transform.Translate (Vector3.left * Time.deltaTime * 30);
 		if (!renderer.isVisible)
-						Destroy (gameObject);
+						count++;
+		if(count > 1)
+			Destroy (gameObject);
 	}
 }

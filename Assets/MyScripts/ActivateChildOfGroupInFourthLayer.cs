@@ -21,6 +21,11 @@ public class ActivateChildOfGroupInFourthLayer : MonoBehaviour {
 			{
 				childTransform.GetComponent<MeshRenderer>().enabled = true;
 				childTransform.GetComponent<BoxCollider>().enabled = true;
+				if(childTransform.GetComponent<ObstacleScript>() != null)
+				if(childTransform.GetComponent<ObstacleScript>().flyingObstacle)
+				{
+					childTransform.GetComponent<ObstacleScript>().AnimalMovementSetter(true);
+				}
 			}
 		}
 	}
@@ -33,6 +38,11 @@ public class ActivateChildOfGroupInFourthLayer : MonoBehaviour {
 			{
 				childTransform.GetComponent<MeshRenderer>().enabled = false;
 				childTransform.GetComponent<BoxCollider>().enabled = false;
+				if(childTransform.GetComponent<ObstacleScript>() != null)
+				if(childTransform.GetComponent<ObstacleScript>().flyingObstacle)
+				{
+					childTransform.GetComponent<ObstacleScript>().AnimalMovementSetter(false);
+				}
 			}
 		}
 	}
