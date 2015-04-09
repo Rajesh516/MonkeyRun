@@ -32,8 +32,14 @@ public class SonicWave : MonoBehaviour
 	void PlayExplosion(Transform expParent)
 	{	
 		//Disable obstacle's renderer and collider
+		#if UNITY_5
+		expParent.GetComponent<Renderer>().enabled = false;
+		expParent.GetComponent<Collider>().enabled = false;
+		#else
 		expParent.renderer.enabled = false;
 		expParent.collider.enabled = false;
+		#endif
+
 		
 		//If the wave can disable, return
 		if (canDisable)

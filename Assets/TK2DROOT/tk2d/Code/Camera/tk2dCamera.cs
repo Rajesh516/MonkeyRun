@@ -118,7 +118,11 @@ public class tk2dCamera : MonoBehaviour
 	private Camera UnityCamera {
 		get {
 			if (_unityCamera == null) {
+#if UNITY_5
+				_unityCamera = GetComponent<Camera>();
+#else
 				_unityCamera = camera;
+#endif
 				if (_unityCamera == null) {
 					Debug.LogError("A unity camera must be attached to the tk2dCamera script");
 				}
@@ -275,7 +279,12 @@ public class tk2dCamera : MonoBehaviour
 			UpdateCameraMatrix();
 		}
 		else {
+			#if UNITY_5
+			this.GetComponent<Camera>().enabled = false;
+			#else
 			this.camera.enabled = false;
+			#endif
+
 		}
 		
 		if (!viewportClippingEnabled) // the main camera can't display rect
@@ -724,13 +733,24 @@ public class tk2dCamera : MonoBehaviour
 				}
 
 				// Mirror camera settings
+#if UNITY_5
+				Camera unityCamera = GetComponent<Camera>();
+#else
 				Camera unityCamera = camera;
+#endif
 				if (unityCamera != null) {
 					cameraSettings.rect = unityCamera.rect;
+					#if UNITY_5 
+					if (!unityCamera.orthographic) {
+						cameraSettings.projection = tk2dCameraSettings.ProjectionType.Perspective;
+						cameraSettings.fieldOfView = unityCamera.fieldOfView * ZoomFactor;
+					}
+					#else
 					if (!unityCamera.isOrthoGraphic) {
 						cameraSettings.projection = tk2dCameraSettings.ProjectionType.Perspective;
 						cameraSettings.fieldOfView = unityCamera.fieldOfView * ZoomFactor;
 					}
+					#endif
 
 					unityCamera.hideFlags = HideFlags.HideInInspector | HideFlags.HideInHierarchy;
 				}

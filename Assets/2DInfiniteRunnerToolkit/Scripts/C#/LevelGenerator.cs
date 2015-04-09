@@ -118,7 +118,7 @@ public class LevelGenerator : MonoBehaviour
 		if (canModifySpeed)
 			//Calculate layer scrolling speed
 			scrollSpeed = defaultScroll + (((maxScrollSpeedDist - (maxScrollSpeedDist - distance)) / maxScrollSpeedDist) * (maxScrollSpeed - defaultScroll));
-		
+
 		//Calculate the other scrolling speeds
 		//scrollBackg = scrollSpeed * 12.5f;
 		//scrollMiddle = scrollBackg * 3;

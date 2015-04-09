@@ -89,9 +89,16 @@ class tk2dSpriteEditor : Editor
 #if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
     	List<Renderer> rs = new List<Renderer>();
     	foreach (var v in targetSprites) {
-    		if (v != null && v.renderer != null) {
-    			rs.Add(v.renderer);
-    		}
+			#if UNITY_5
+			if (v != null && v.GetComponent<Renderer>() != null) {
+				rs.Add(v.GetComponent<Renderer>());
+			}
+			#else
+			if (v != null && v.renderer != null) {
+				rs.Add(v.renderer);
+			}
+			#endif
+    		
     	}
     	renderers = rs.ToArray();
 #endif
@@ -485,7 +492,12 @@ class tk2dSpriteEditor : Editor
 			GameObject go = tk2dEditorUtility.CreateGameObjectInScene("Sprite");
 			tk2dSprite sprite = go.AddComponent<tk2dSprite>();
 			sprite.SetSprite(sprColl, sprColl.FirstValidDefinitionIndex);
+			#if UNITY_5
+			sprite.GetComponent<Renderer>().material = sprColl.FirstValidDefinition.material;
+			#else
 			sprite.renderer.material = sprColl.FirstValidDefinition.material;
+			#endif
+
 			sprite.Build();
 			
 			Selection.activeGameObject = go;

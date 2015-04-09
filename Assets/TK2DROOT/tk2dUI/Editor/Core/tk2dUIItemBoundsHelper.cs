@@ -31,8 +31,12 @@ public static class tk2dUIItemBoundsHelper {
             }
             for (int i = 0; i < t.childCount; ++i) {
                 Transform child = t.GetChild(i);
-
-                if (!includeAllChildren && child.collider != null) {
+				#if UNITY_5
+				if (!includeAllChildren && child.GetComponent<Collider>() != null) {
+				#else
+				if (!includeAllChildren && child.collider != null) {
+				#endif
+               
                     continue;
                 }
 
@@ -65,7 +69,12 @@ public static class tk2dUIItemBoundsHelper {
     public static void FixColliderBounds( tk2dUIItem item ) {
         HashSet<Transform> ignoreItems = new HashSet<Transform>( item.editorIgnoreBounds );
         Transform root = item.transform;
-        Collider collider = item.collider;
+			#if UNITY_5
+			Collider collider = item.GetComponent<Collider>();
+			#else
+			Collider collider = item.collider;
+			#endif
+       
         Bounds b = GetRendererBoundsInChildren(root, ignoreItems, root, false);
 
         foreach (Transform t in item.editorExtraBounds) {

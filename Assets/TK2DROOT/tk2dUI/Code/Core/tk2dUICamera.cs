@@ -16,18 +16,33 @@ public class tk2dUICamera : MonoBehaviour {
 	// The actual layermask, i.e. allowedMasks & layerMask
 	public LayerMask FilteredMask {
 		get {
+			#if UNITY_5
+			return raycastLayerMask & GetComponent<Camera>().cullingMask;
+			#else
 			return raycastLayerMask & camera.cullingMask;
+			#endif
+
 		}
 	}
 
 	public Camera HostCamera {
 		get {
-			return camera;
+			#if UNITY_5
+			return GetComponent<Camera>();
+			#else
+				return camera;
+			#endif
+			
 		}
 	}
 
 	void OnEnable() {
-		if (camera == null) {
+		#if UNITY_5
+		if (GetComponent<Camera>() == null) 
+		#else
+		if (camera == null) 
+		#endif
+		{
 			Debug.LogError("tk2dUICamera should only be attached to a camera.");
 			enabled = false;
 			return;

@@ -13,6 +13,11 @@ public class LaserBeam : MonoBehaviour
 		//Apply scrolling speed to scrolling vector
 		scrolling.x = scrollSpeed;
 		//Set the texture offset based on scrolling vector
-		this.renderer.material.mainTextureOffset += scrolling * Time.deltaTime;
+		#if UNITY_5
+			this.GetComponent<Renderer>().material.mainTextureOffset += scrolling * Time.deltaTime;
+		#else
+			this.renderer.material.mainTextureOffset += scrolling * Time.deltaTime;
+		#endif
+
 	}
 }

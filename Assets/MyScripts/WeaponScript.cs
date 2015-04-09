@@ -12,8 +12,14 @@ public class WeaponScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		transform.Translate (Vector3.left * Time.deltaTime * 30);
+		#if UNITY_5
+		if (!GetComponent<Renderer>().isVisible)
+			count++;
+		#else
 		if (!renderer.isVisible)
-						count++;
+			count++;
+		#endif
+
 		if(count > 1)
 			Destroy (gameObject);
 	}

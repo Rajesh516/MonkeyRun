@@ -91,11 +91,19 @@ public class PlayerManager : MonoBehaviour
 	//Called at every frame
 	void Update()
 	{
+#if UNITY_5
+		if (GetComponent<Rigidbody>().velocity.y < 0)
+		{
+			GetComponent<Rigidbody>().velocity -= new Vector3 (0, 2, 0);
+			//print ("Velocity+++++++    " + rigidbody.velocity.y);
+		}
+#else
 		if (rigidbody.velocity.y < 0)
 		{
 			rigidbody.velocity -= new Vector3 (0, 2, 0);
 			//print ("Velocity+++++++    " + rigidbody.velocity.y);
 		}
+#endif
 		//If the control are enabled
 		if (subEnabled)
 		{
@@ -146,8 +154,14 @@ public class PlayerManager : MonoBehaviour
 	public void CoinCollected(Collider other)
 	{
 		//Disable the coin's renderer and collider
+		#if UNITY_5
+		other.GetComponent<Renderer>().enabled = false;
+		other.GetComponent<Collider>().enabled = false;
+		#else
 		other.renderer.enabled = false;
 		other.collider.enabled = false;
+		#endif
+
 		
 		//Play it's particle system, and increase coin ammount
 		other.transform.FindChild("CoinParticle").gameObject.GetComponent<ParticleSystem>().Play();
@@ -390,8 +404,14 @@ public class PlayerManager : MonoBehaviour
 			ParticleSystem explosion = expParent.FindChild("ExplosionParticle").gameObject.GetComponent("ParticleSystem") as ParticleSystem;
 			explosion.Play();
 			//Disable the object's renderer and collider
+			#if UNITY_5
+			expParent.GetComponent<Renderer>().enabled = false;
+			expParent.GetComponent<Collider>().enabled = false;
+			#else
 			expParent.renderer.enabled = false;
 			expParent.collider.enabled = false;
+			#endif
+
 		}
 	}
 	//Wreck the sub
@@ -674,7 +694,11 @@ public class PlayerManager : MonoBehaviour
 		if (canJump && subEnabled) 
 		{
 			monkeyAnimationObject.GetComponent<MonkeyAnimationScript> ().AnimationStateSetter (1);
+#if UNITY_5
+			GetComponent<Rigidbody>().velocity = new Vector3 (0, 35, 0);
+#else
 			rigidbody.velocity = new Vector3 (0, 35, 0);
+#endif
 			CanJumpSetter(false);
 		}
 		//If the player is not at the min depth, and the controls are enabled, move up
@@ -849,7 +873,11 @@ public class PlayerManager : MonoBehaviour
 
 	public Vector3 MyVelocity()
 	{
+#if UNITY_5
+		return GetComponent<Rigidbody>().velocity;
+#elif
 		return rigidbody.velocity;
+#endif
 	}
 
 	public Vector3 MyTransform()

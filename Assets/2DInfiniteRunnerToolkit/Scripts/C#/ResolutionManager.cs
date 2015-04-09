@@ -189,10 +189,15 @@ public class ResolutionManager : MonoBehaviour
 			temp = element.transform.localScale;
 			temp.x = scale;
 			element.transform.localScale = temp;
-			
+#if UNITY_5
+			offset = element.GetComponent<Renderer>().material.mainTextureScale;
+			offset.x = scale/100;
+			element.transform.GetComponent<Renderer>().material.mainTextureScale = offset;
+#else
 			offset = element.renderer.material.mainTextureScale;
 			offset.x = scale/100;
 			element.transform.renderer.material.mainTextureScale = offset;
+#endif
 		}
 		
 		//Set the hangar's current and starting position

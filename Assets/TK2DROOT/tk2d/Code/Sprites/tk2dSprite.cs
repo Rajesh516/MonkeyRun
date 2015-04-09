@@ -200,8 +200,14 @@ public class tk2dSprite : tk2dBaseSprite
 	
 	protected override void UpdateMaterial()
 	{
+#if UNITY_5
+		if (GetComponent<Renderer>().sharedMaterial != collectionInst.spriteDefinitions[spriteId].materialInst)
+			GetComponent<Renderer>().material = collectionInst.spriteDefinitions[spriteId].materialInst;
+#else
 		if (renderer.sharedMaterial != collectionInst.spriteDefinitions[spriteId].materialInst)
 			renderer.material = collectionInst.spriteDefinitions[spriteId].materialInst;
+#endif
+
 	}
 	
 	protected override int GetCurrentVertexCount()

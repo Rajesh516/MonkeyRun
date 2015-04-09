@@ -111,6 +111,16 @@ public class tk2dButton : MonoBehaviour
 		{
 			// Find a camera parent 
             Transform node = transform;
+#if UNITY_5
+			while (node && node.GetComponent<Camera>() == null)
+			{
+				node = node.parent;
+			}
+			if (node && node.GetComponent<Camera>() != null) 
+			{
+				viewCamera = node.GetComponent<Camera>();
+			}
+#else
             while (node && node.camera == null)
             {
                 node = node.parent;
@@ -119,11 +129,16 @@ public class tk2dButton : MonoBehaviour
 			{
 				viewCamera = node.camera;
 			}
+#endif
 			
 			// See if a tk2dCamera exists
 			if (viewCamera == null && tk2dCamera.Instance)
 			{
+#if UNITY_5
+				viewCamera = tk2dCamera.Instance.GetComponent<Camera>();
+#elif
 				viewCamera = tk2dCamera.Instance.camera;
+#endif
 			}
 			
 			// ...otherwise, use the main camera
@@ -142,17 +157,24 @@ public class tk2dButton : MonoBehaviour
 			// Same concept here, lookup Ids and call Play(xxx) instead of .spriteId = xxx
 			UpdateSpriteIds();
 		}
-		
+#if UNITY_5
+		if (GetComponent<Collider>() == null)
+#else
 		if (collider == null)
+#endif
 		{
 			BoxCollider newCollider = gameObject.AddComponent<BoxCollider>();
 			Vector3 colliderSize = newCollider.size;
 			colliderSize.z = 0.2f;
 			newCollider.size = colliderSize;
 		}
-		
+#if UNITY_5		
+		if ((buttonDownSound != null || buttonPressedSound != null || buttonUpSound != null) &&
+		    GetComponent<AudioSource>() == null)
+#else
 		if ((buttonDownSound != null || buttonPressedSound != null || buttonUpSound != null) &&
 			audio == null)
+#endif
 		{
 			AudioSource audioSource = gameObject.AddComponent<AudioSource>();
 			audioSource.playOnAwake = false;
@@ -173,10 +195,17 @@ public class tk2dButton : MonoBehaviour
 	// In our case, we have a global audio manager to play one shot sounds and pool them
 	void PlaySound(AudioClip source)
 	{
+#if UNITY_5
+		if (GetComponent<AudioSource>() && source)
+		{
+			GetComponent<AudioSource>().PlayOneShot(source);
+		}
+#else
 		if (audio && source)
 		{
 			audio.PlayOneShot(source);
 		}
+#endif
 	}
 	
 	IEnumerator coScale(Vector3 defaultScale, float startScale, float endScale)
@@ -269,7 +298,11 @@ public class tk2dButton : MonoBehaviour
             Ray ray = viewCamera.ScreenPointToRay(cursorPosition);
 
             RaycastHit hitInfo;
+#if UNITY_5
+			bool colliderHit = GetComponent<Collider>().Raycast(ray, out hitInfo, Mathf.Infinity);
+#elif
 			bool colliderHit = collider.Raycast(ray, out hitInfo, Mathf.Infinity);
+#endif
             if (buttonPressed && !colliderHit)
 			{
 				if (targetScale != 1.0f)
@@ -368,7 +401,11 @@ public class tk2dButton : MonoBehaviour
 				if (touch.phase != TouchPhase.Began) continue;
 	            Ray ray = viewCamera.ScreenPointToRay(touch.position);
 	            RaycastHit hitInfo;
+#if UNITY_5
+				if (GetComponent<Collider>().Raycast(ray, out hitInfo, 1.0e8f))
+#elif
 	            if (collider.Raycast(ray, out hitInfo, 1.0e8f))
+#endif
 	            {
 					if (!Physics.Raycast(ray, hitInfo.distance - 0.01f))
 					{
@@ -376,7 +413,7 @@ public class tk2dButton : MonoBehaviour
 						detected = true;
 						break; // only one finger on a buton, please.
 					}
-	            }	            
+	            }	
 			}
 		}
 		if (!detected)
@@ -386,11 +423,19 @@ public class tk2dButton : MonoBehaviour
 	        {
 	            Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 	            RaycastHit hitInfo;
+#if UNITY_5
+				if (GetComponent<Collider>().Raycast(ray, out hitInfo, 1.0e8f))
+				{
+					if (!Physics.Raycast(ray, hitInfo.distance - 0.01f))
+						StartCoroutine(coHandleButtonPress(-1));
+				}
+#elif
 	            if (collider.Raycast(ray, out hitInfo, 1.0e8f))
 	            {
 					if (!Physics.Raycast(ray, hitInfo.distance - 0.01f))
 						StartCoroutine(coHandleButtonPress(-1));
 	            }
+#endif
 	        }
 		}
 	}

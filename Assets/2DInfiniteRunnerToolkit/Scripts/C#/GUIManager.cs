@@ -418,7 +418,11 @@ public class GUIManager : MonoBehaviour
 				break;
 			
 			case "MainArrow":
+#if UNITY_5
+			MainMenuArrowTrigger(button.GetComponent<Renderer>().material);
+#else
 				MainMenuArrowTrigger(button.renderer.material);
+#endif
 				break;
 			
 			case "AudioEnabler":

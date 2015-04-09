@@ -10,7 +10,7 @@ public class tk2dUIMaskEditor : Editor {
 
 		DrawDefaultInspector();
 
-#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 ||UNITY_5)
 	Renderer renderer = mask.renderer;
         GUILayout.Space(8);
 		if (renderer != null) {

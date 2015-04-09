@@ -236,7 +236,12 @@ public class tk2dUIManager : MonoBehaviour
         }
 
         // Largest depth gets priority
-        sortedCameras.Sort( (a, b) => b.camera.depth.CompareTo( a.camera.depth ) );
+		#if UNITY_5
+		sortedCameras.Sort( (a, b) => b.GetComponent<Camera>().depth.CompareTo( a.GetComponent<Camera>().depth ) );
+		#else
+		sortedCameras.Sort( (a, b) => b.camera.depth.CompareTo( a.camera.depth ) );
+		#endif
+        
     }
 
     void Awake()

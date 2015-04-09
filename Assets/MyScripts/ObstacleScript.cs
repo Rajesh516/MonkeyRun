@@ -55,7 +55,12 @@ public class ObstacleScript : MonoBehaviour {
 						}
 					}
 				}
+				#if UNITY_5
+				PlayerManager.Instance.ObstacleCollided(gameObject.GetComponent<Collider>());	
+				#else
 				PlayerManager.Instance.ObstacleCollided(gameObject.collider);	
+				#endif
+
 			}
 		}
 		if (colli.gameObject.tag.Equals ("Weapon")) {
@@ -76,7 +81,6 @@ public class ObstacleScript : MonoBehaviour {
 					{
 						if(childTransform.GetComponent<MovingAnimals>()!=null)
 						{
-							print ("FlyingDead");
 							childTransform.GetComponent<MeshRenderer>().enabled = false;
 						}
 					}
@@ -85,11 +89,22 @@ public class ObstacleScript : MonoBehaviour {
 				ParticleSystem explosion = expParent.FindChild("ExplosionParticle").gameObject.GetComponent("ParticleSystem") as ParticleSystem;
 				explosion.Play();
 				//Disable the object's renderer and collider
+				#if UNITY_5
+				expParent.GetComponent<Renderer>().enabled = false;
+				expParent.GetComponent<Collider>().enabled = false;
+				#else
 				expParent.renderer.enabled = false;
 				expParent.collider.enabled = false;
+				#endif
+
 			}
+			#if UNITY_5
+			weaponTransform.GetComponent<Renderer>().enabled = false;
+			weaponTransform.GetComponent<Collider>().enabled = false;
+			#else
 			weaponTransform.renderer.enabled = false;
 			weaponTransform.collider.enabled = false;
+			#endif
 		}
 	}
 
@@ -104,5 +119,33 @@ public class ObstacleScript : MonoBehaviour {
 				childTransform.GetComponent<MeshRenderer>().enabled = true;
 			}
 		}
+	}
+
+	public void PlayerCollidedWithTop()
+	{
+		print("Calling------------");
+		Transform expParent = transform;
+		if(flyingObstacle)
+		{
+			foreach (Transform childTransform in transform)
+			{
+				if(childTransform.GetComponent<MovingAnimals>()!=null)
+				{
+					childTransform.GetComponent<MeshRenderer>().enabled = false;
+				}
+			}
+		}
+		//Find the particle child, and play it
+		ParticleSystem explosion = expParent.FindChild("ExplosionParticle").gameObject.GetComponent("ParticleSystem") as ParticleSystem;
+		explosion.Play();
+		//Disable the object's renderer and collider
+		#if UNITY_5
+		expParent.GetComponent<Renderer>().enabled = false;
+		expParent.GetComponent<Collider>().enabled = false;
+		#else
+		expParent.renderer.enabled = false;
+		expParent.collider.enabled = false;
+		#endif
+
 	}
 }

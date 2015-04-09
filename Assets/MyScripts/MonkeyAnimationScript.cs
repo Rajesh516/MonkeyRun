@@ -63,7 +63,12 @@ public class MonkeyAnimationScript : MonoBehaviour {
 	{
 		while(monkeyPresentState == 0)
 		{
+			#if UNITY_5
+			GetComponent<Renderer>().material.mainTexture = monkeyRunAnimation[monkeyRunCount];
+			#else
 			renderer.material.mainTexture = monkeyRunAnimation[monkeyRunCount];
+			#endif
+
 			monkeyBananaThrowCount = monkeyDieCount = monkeyJumpCount = 0;
 			monkeyRunCount++;
 		yield return new WaitForSeconds(0.05f);
@@ -76,7 +81,12 @@ public class MonkeyAnimationScript : MonoBehaviour {
 	{
 		while(monkeyPresentState == 3)
 		{
+			#if UNITY_5
+			GetComponent<Renderer>().material.mainTexture = monkeyBananaThrowAnimation[monkeyBananaThrowCount];
+			#else
 			renderer.material.mainTexture = monkeyBananaThrowAnimation[monkeyBananaThrowCount];
+			#endif
+
 			monkeyRunCount = monkeyDieCount = monkeyJumpCount = 0;
 			monkeyBananaThrowCount++;
 			yield return new WaitForSeconds(0.05f);
@@ -93,7 +103,12 @@ public class MonkeyAnimationScript : MonoBehaviour {
 		while(monkeyPresentState == 1)
 		{
 			yield return new WaitForSeconds(0.07f);
+			#if UNITY_5
+			GetComponent<Renderer>().material.mainTexture = monkeyJumpAnimation[monkeyJumpCount];
+			#else
 			renderer.material.mainTexture = monkeyJumpAnimation[monkeyJumpCount];
+			#endif
+
 			monkeyBananaThrowCount = monkeyDieCount = monkeyRunCount = 0;
 			monkeyJumpCount++;
 			if(monkeyJumpCount == monkeyJumpAnimation.GetLength(0))
@@ -105,14 +120,24 @@ public class MonkeyAnimationScript : MonoBehaviour {
 	{
 		while(monkeyPresentState == 2)
 		{
+			#if UNITY_5
+			GetComponent<Renderer>().material.mainTexture = monkeyDieAnimation[monkeyDieCount];
+			#else
 			renderer.material.mainTexture = monkeyDieAnimation[monkeyDieCount];
+			#endif
+
 			monkeyBananaThrowCount = monkeyJumpCount = monkeyRunCount = 0;
 			monkeyDieCount++;
 			yield return new WaitForSeconds(0.2f);
 			if(monkeyDieCount >= monkeyDieAnimation.GetLength(0))
 				break;
 		}
+		#if UNITY_5
+		GetComponent<Renderer>().material.mainTexture = monkeyDieAnimation[monkeyDieAnimation.GetLength(0)-1];
+		#else
 		renderer.material.mainTexture = monkeyDieAnimation[monkeyDieAnimation.GetLength(0)-1];
+		#endif
+
 	}
 
 	public int MonkeyPresentStateGetter()

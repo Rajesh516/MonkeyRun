@@ -380,7 +380,12 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 	Renderer CachedRenderer {
 		get {
 			if (_cachedRenderer == null) {
+				#if UNITY_5
+				_cachedRenderer = GetComponent<Renderer>();
+				#else
 				_cachedRenderer = renderer;
+				#endif
+
 			}
 			return _cachedRenderer;
 		}
@@ -704,6 +709,17 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 		}
 		else if (Camera.main)
 		{
+#if UNITY_5
+			if (Camera.main.orthographic)
+			{
+				s = Camera.main.orthographicSize;
+			}
+			else
+			{
+				float zdist = (transform.position.z - Camera.main.transform.position.z);
+				s = tk2dPixelPerfectHelper.CalculateScaleForPerspectiveCamera(Camera.main.fieldOfView, zdist);
+			}
+#else
 			if (Camera.main.isOrthoGraphic)
 			{
 				s = Camera.main.orthographicSize;
@@ -713,6 +729,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 				float zdist = (transform.position.z - Camera.main.transform.position.z);
 				s = tk2dPixelPerfectHelper.CalculateScaleForPerspectiveCamera(Camera.main.fieldOfView, zdist);
 			}
+#endif
 			s *= _fontInst.invOrthoSize;
 		}
 		scale = new Vector3(Mathf.Sign(scale.x) * s, Mathf.Sign(scale.y) * s, Mathf.Sign(scale.z) * s);
@@ -730,8 +747,13 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 	
 	void UpdateMaterial()
 	{
+#if UNITY_5
+		if (GetComponent<Renderer>().sharedMaterial != _fontInst.materialInst)
+			GetComponent<Renderer>().material = _fontInst.materialInst;
+#else
 		if (renderer.sharedMaterial != _fontInst.materialInst)
 			renderer.material = _fontInst.materialInst;
+#endif
 	}
 	
 	public void ForceBuild()

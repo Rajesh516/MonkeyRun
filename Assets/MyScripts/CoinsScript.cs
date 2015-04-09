@@ -16,7 +16,12 @@ public class CoinsScript : MonoBehaviour {
 	void OnTriggerEnter(Collider colli)
 	{
 		if (colli.gameObject.tag.Equals ("Player")) {
+			#if UNITY_5
+			PlayerManager.Instance.CoinCollected(gameObject.GetComponent<Collider>());	
+			#else
 			PlayerManager.Instance.CoinCollected(gameObject.collider);	
+			#endif
+
 		}
 	}
 }

@@ -48,8 +48,14 @@ public class tk2dUILayout : MonoBehaviour {
 	public event System.Action<Vector3, Vector3> OnReshape;
 
 	void Reset() {
+		#if UNITY_5
+		if (GetComponent<Collider>() != null) {
+			BoxCollider box = GetComponent<Collider>() as BoxCollider;
+		#else
 		if (collider != null) {
 			BoxCollider box = collider as BoxCollider;
+		#endif
+
 			if (box != null) {
 				Bounds b = box.bounds;
 				Matrix4x4 m = transform.worldToLocalMatrix;

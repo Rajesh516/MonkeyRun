@@ -145,7 +145,11 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 	Renderer CachedRenderer {
 		get {
 			if (_cachedRenderer == null) {
+#if UNITY_5
+				_cachedRenderer = GetComponent<Renderer>();
+#else
 				_cachedRenderer = renderer;
+#endif
 			}
 			return _cachedRenderer;
 		}
@@ -317,7 +321,11 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 		}
 		else if (Camera.main)
 		{
+#if UNITY_5
+			if (Camera.main.orthographic)
+#else
 			if (Camera.main.isOrthoGraphic)
+#endif
 			{
 				s = Camera.main.orthographicSize;
 			}
@@ -591,7 +599,12 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 					if (!boxCollider2D.enabled) {
 						boxCollider2D.enabled = true;
 					}
-					boxCollider2D.center = new Vector2(sprite.colliderVertices[0].x * _scale.x, sprite.colliderVertices[0].y * _scale.y);
+				#if UNITY_5
+				boxCollider2D.offset = new Vector2(sprite.colliderVertices[0].x * _scale.x, sprite.colliderVertices[0].y * _scale.y);
+				#else
+				boxCollider2D.center = new Vector2(sprite.colliderVertices[0].x * _scale.x, sprite.colliderVertices[0].y * _scale.y);
+				#endif
+					
 					boxCollider2D.size = new Vector2(Mathf.Abs(2 * sprite.colliderVertices[1].x * _scale.x), Mathf.Abs(2 * sprite.colliderVertices[1].y * _scale.y));
 				}
 				else if (sprite.colliderType == tk2dSpriteDefinition.ColliderType.Mesh)
@@ -705,7 +718,11 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 
 		if (sprite.physicsEngine == tk2dSpriteDefinition.PhysicsEngine.Physics3D) {
 			// User has created a collider
+			#if UNITY_5
+			if (GetComponent<Collider>() != null)
+			#else
 			if (collider != null)
+			#endif
 			{
 				boxCollider = GetComponent<BoxCollider>();
 				meshCollider = GetComponent<MeshCollider>();
@@ -741,7 +758,12 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 				meshCollider.smoothSphereCollisions = sprite.colliderSmoothSphereCollisions;
 				
 				// this is required so our mesh pivot is at the right point
+				#if UNITY_5
+				if (GetComponent<Rigidbody>()) GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
+				#else
 				if (rigidbody) rigidbody.centerOfMass = Vector3.zero;
+				#endif
+
 			}
 			else if (sprite.colliderType != tk2dSpriteDefinition.ColliderType.None)
 			{
@@ -774,11 +796,16 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 		tk2dSpriteDefinition sprite = collectionInst.spriteDefinitions[_spriteId];
 		if (sprite.colliderType == tk2dSpriteDefinition.ColliderType.Unset)
 			return;
-		
+		#if UNITY_5
+		PhysicMaterial physicsMaterial = GetComponent<Collider>()?GetComponent<Collider>().sharedMaterial:null;
+		bool isTrigger = GetComponent<Collider>()?GetComponent<Collider>().isTrigger:false;
+		#else
 		PhysicMaterial physicsMaterial = collider?collider.sharedMaterial:null;
 		bool isTrigger = collider?collider.isTrigger:false;
+		#endif
 
-#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_5)
 		PhysicsMaterial2D physicsMaterial2D = collider2D?collider2D.sharedMaterial:null;
 		if (collider2D != null) {
 			isTrigger = collider2D.isTrigger;
@@ -867,14 +894,25 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 		}
 
 		CreateCollider();
-		
+
+		#if UNITY_5
+		if (GetComponent<Collider>())
+		#else
 		if (collider)
+		#endif
+
 		{
+			#if UNITY_5
+			GetComponent<Collider>().isTrigger = isTrigger;
+			GetComponent<Collider>().material = physicsMaterial;
+			#else
 			collider.isTrigger = isTrigger;
 			collider.material = physicsMaterial;
+			#endif
+
 		}
 
-#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_5)
 		if (boxCollider2D) {
 			boxCollider2D.isTrigger = isTrigger;
 			boxCollider2D.sharedMaterial = physicsMaterial2D;

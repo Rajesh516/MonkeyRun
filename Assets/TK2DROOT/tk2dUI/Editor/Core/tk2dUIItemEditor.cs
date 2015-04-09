@@ -45,7 +45,12 @@ public class tk2dUIItemEditor : Editor
         methodBindingUtil.MethodBinding( "On Release", typeof(tk2dUIItem), btn.sendMessageTarget, ref btn.SendMessageOnReleaseMethodName );
         methodBindingUtil.EndMessageGUI();
 
-        if (btn.collider != null) {
+		#if UNITY_5
+		if (btn.GetComponent<Collider>() != null) {
+		#else
+		if (btn.collider != null) {
+		#endif
+        
             GUILayout.Label("Collider", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
 

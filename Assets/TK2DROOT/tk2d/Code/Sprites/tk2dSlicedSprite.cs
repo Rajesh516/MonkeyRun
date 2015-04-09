@@ -353,7 +353,7 @@ public class tk2dSlicedSprite : tk2dBaseSprite
 				}
 			}
 			else if (CurrentSprite.physicsEngine == tk2dSpriteDefinition.PhysicsEngine.Physics2D) {
-#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_5)
 				if (boxCollider2D != null) {
 					boxCollider2D.size = 2 * boundsExtents;
 					boxCollider2D.center = boundsCenter;
@@ -393,8 +393,14 @@ public class tk2dSlicedSprite : tk2dBaseSprite
 	
 	protected override void UpdateMaterial()
 	{
+		#if UNITY_5
+		if (GetComponent<Renderer>().sharedMaterial != collectionInst.spriteDefinitions[spriteId].materialInst)
+			GetComponent<Renderer>().material = collectionInst.spriteDefinitions[spriteId].materialInst;
+		#else
 		if (renderer.sharedMaterial != collectionInst.spriteDefinitions[spriteId].materialInst)
 			renderer.material = collectionInst.spriteDefinitions[spriteId].materialInst;
+		#endif
+
 	}
 	
 	protected override int GetCurrentVertexCount()

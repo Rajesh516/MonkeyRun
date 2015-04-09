@@ -57,8 +57,13 @@ public class Obstacles : MonoBehaviour
             EnableDisable(child, true);
 			
 			//Active the child's renderer and collider
+#if UNITY_5
+			child.GetComponent<Renderer>().enabled = true;
+			child.GetComponent<Collider>().enabled = true;
+#else
 			child.renderer.enabled = true;
 			child.collider.enabled = true;
+#endif
 		}
 	}
 }

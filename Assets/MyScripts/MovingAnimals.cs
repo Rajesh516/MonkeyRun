@@ -33,7 +33,12 @@ public class MovingAnimals : MonoBehaviour {
 		while (birdFlyAnimation) 
 		{
 			yield return new WaitForSeconds (0.2f);
+			#if UNITY_5
+			GetComponent<Renderer>().material.mainTexture = birdFlyAnimationTexture[birdFlyCount];
+			#else
 			renderer.material.mainTexture = birdFlyAnimationTexture[birdFlyCount];
+			#endif
+
 			birdFlyCount++;
 			if(birdFlyCount == birdFlyAnimationTexture.GetLength(0))
 				birdFlyCount = 0;

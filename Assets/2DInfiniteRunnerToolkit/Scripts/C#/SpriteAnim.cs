@@ -46,14 +46,23 @@ public class SpriteAnim : MonoBehaviour
 		if (currentId == 0)
 		{
 			//Go to animation frame 1
+			#if UNITY_5
+			this.GetComponent<Renderer>().material.mainTexture = frameB;
+			#else
 			this.renderer.material.mainTexture = frameB;
+			#endif
+
 			currentId = 1;
 		}
 		//If the current animation frame is 1
 		else
 		{
 			//Go to animation frame 0
+			#if UNITY_5
+			this.GetComponent<Renderer>().material.mainTexture = frameA;
+			#else
 			this.renderer.material.mainTexture = frameA;
+			#endif
 			currentId = 0;
 		}
 		
